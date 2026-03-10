@@ -1,185 +1,180 @@
-# Django-multitenant-saas-ecommerce-project
-## Automating Django , Celery , Redis and postgres deployment to AWS EC2 using Terraform ( Complete Guide)
+# Django Multi-Tenant SaaS E-Commerce — DevOps Deployment
 
-![image](https://raw.githubusercontent.com/Shubhamharanale7/django-multitenant-saas-ecommerce/main/media/Screenshot.png)
+![image](https://raw.githubusercontent.com/Shubhamharanale7/Django-Saas-E-Commerce-Devops-Deployment/main/media/Screenshot.png)
 
-- [@DevCloud Ninjas](https://www.Shubhamharanale7.com)
-- [@X](twitter.com/Shubhamharanale7)
-- [@Linkedin](https://www.linkedin.com/company/Shubhamharanale7)
-
-
+**Built by:** [Shubham Haranale](https://github.com/Shubhamharanale7)
 
 ## Introduction
-Automating deployment processes is crucial for modern web development, enhancing productivity and reliability. In this article, we focus on automating the deployment of a Django web application onto an Ubuntu Server hosted on AWS EC2.
 
-## 🛡️ 2026 DevSecOps Enhancements (What You Will Learn)
-Deploying Django to production requires strict adherence to DevSecOps principles, as many development defaults are highly insecure:
-1. **Production Web Servers:** Running `python manage.py runserver` in production is a critical security vulnerability. This project must transition to using a robust WSGI/ASGI server like **Gunicorn** or **Uvicorn**, ideally placed behind an Nginx reverse proxy to securely handle TLS/SSL termination and prevent slow-loris DDoS attacks.
-2. **Django Secret & Configuration Security:** The Django `SECRET_KEY`, `DEBUG = True`, and database credentials must never be committed to source control. In a DevSecOps deployment, these variables are injected dynamically at runtime via AWS Secrets Manager or HashiCorp Vault.
+A production-ready **Django Multi-Tenant SaaS E-Commerce** application with full DevOps automation. This project covers the complete deployment pipeline — from local development to AWS EC2 using Terraform, Docker, Kubernetes, Jenkins CI/CD, SonarQube, and Trivy security scanning.
 
-### Prerequisites:
-Before we get into the good stuffs, first we need to make sure we have the required services on our local machine or dev server, which are:
+## 🛡️ DevSecOps Enhancements
 
-- Basic knowledge of Django
-- AWS Account
-- Github Account
-- AWS CLI installed and configured.
-- ECS CLI
-- Docker installed locally.
-- Typescript installed
-- Postman
+This project follows strict DevSecOps principles:
+
+1. **Production Web Servers:** Uses **Gunicorn** as WSGI server behind an **Nginx** reverse proxy for TLS/SSL termination and DDoS protection — never `runserver` in production.
+2. **Secrets Management:** Django `SECRET_KEY`, `DEBUG`, and database credentials are never hardcoded. All sensitive values are injected at runtime via environment variables or AWS Secrets Manager.
+3. **Stripe Integration:** Payment API keys are loaded securely via environment variables using `os.environ.get('STRIPE_SECRET_KEY')`.
+
+## Features
+
+- Multi-Tenant SaaS architecture with isolated schemas per tenant
+- E-Commerce with products, orders, payments (Stripe integration)
+- RESTful API with Django REST Framework
+- GraphQL API support
+- Celery + Redis for async task processing
+- Docker & Docker Compose for containerization
+- Kubernetes deployment on AWS EKS
+- CI/CD with Jenkins and GitHub Actions
+- SonarQube code quality analysis
+- Trivy container vulnerability scanning
+- Terraform for AWS infrastructure provisioning
+- Prometheus + Grafana monitoring
+- Swagger API documentation
+
+## Project Structure
+
+```
+.
+├── apps/                        # Django applications
+│   ├── products/                # E-commerce products & payments
+│   ├── finances/                # Financial management
+│   ├── users/                   # User authentication
+│   ├── client_app/              # Multi-tenant client app
+│   ├── payments/                # Payment processing
+│   ├── snippets/                # Code snippets API
+│   └── home/                    # Home views
+├── multitenantsaas/             # Django project settings
+├── deployments/                 # All deployment configs
+│   ├── Jenkins/                 # Multiple Jenkinsfile variants
+│   ├── k8s/                     # Kubernetes manifests
+│   ├── terraform/               # Terraform AWS configs
+│   └── scripts/                 # Automation scripts
+├── nginx/                       # Nginx configuration
+├── tests/                       # Test suite
+├── Dockerfile                   # Container definition
+├── docker-compose.yml           # Local development stack
+├── docker-compose-nginx.yaml    # Production stack with Nginx
+└── requirements.txt             # Python dependencies
+```
+
+## Prerequisites
+
 - Python 3
-- NPM
-- NodeJS
-- Terraform
-- A Domain name Hosted from any domain name provider ( Ex: AWS Route 53 )
-- Basic familiarity with YAML and GitHub workflows.
-- A Django project hosted in a GitHub repository
-- Basic knowledge of HTML or React
-- Any Browser for testing
-- Intermediate knowledge in Serverless Computing ( Ex : AWS Lambda , ECS,..)
+- Docker & Docker Compose
+- AWS Account + AWS CLI configured
+- Terraform installed
+- Node.js & NPM
+- A domain name (optional, for production)
 
-You can follow along with this source code:
-GitHub - Shubhamharanale7/django-multitenant-saas-ecommerce-kubernetes: Django Multi-tenant …
-Django Multi-tenant , microservices , Kubernetes, Jenkins, Github Actions and Multiple Databases using docker, bash…
-github.com
+## Local Setup
 
-## Steps
-
-## Step 1: Create a virtual environment to hold all pip libraries installations
-
-If you don’t have virtualenv installed, you can install it by running the following command in your CMD after Python was installed:
-
-Create virtual environment for Python
-    ```
-    python3 -m venv .venv
-    ```
-## Step 2 : Activate the environment:
-
-```
-source ./venv/bin/activate
-source ./venv/bin/deactivate ( To Deactivate )
+### Step 1: Create virtual environment
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-### Step 3: Create project folder
-```
-mkdir app
-```
-## Step 4: Install Django
-```
-pip install django
-```
-## Step 5: Create a new Django project inside the project folder
-
-A Django app is a self-contained component of a Django project. It is a module that provides specific functionality, such as handling authentication, managing blog posts, or serving an API. An app should represent a single, specific functionality or purpose within the overall website.
-```
-django-admin startproject django-multitenant-saas-ecommerce-kubernetes
-```
-## Step 6: Create a new test app:
-
-within the django project using the following command:
-```
-python manage.py startapp testapp
+### Step 2: Install dependencies
+```bash
+pip install -r requirements.txt
 ```
 
-***Adding a new app into the project***
-```
-python manage.py startapp home apps/home
-```
-
-## Step 7 : Execute ORM Data Migrations:
-```
+### Step 3: Run migrations
+```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-## Step 8: Launch the django development server
+### Step 4: Create superuser
+```bash
+python manage.py createsuperuser
 ```
+
+### Step 5: Start development server
+```bash
 python manage.py runserver
 ```
 
-## Step 9:  create admin user
+## Docker Setup
 
-```
-python manage.py createsuperuser
-```
-## start using shell 
-```
-bash ./server-entrypoint.sh
-```
-
-# Docker
- ```
+```bash
 bash ./run.sh
-http://127.0.0.1:8585/
- ```
+```
 
-# API Docs
- ```
-http://127.0.0.1:8585/swagger/
- ```
- [@Swagger](http://127.0.0.1:8585/swagger/)
+Access the app at: `http://127.0.0.1:8585/`
 
-# Data Browser
+## API Documentation
 
-http://127.0.0.1:8585/data-browser/
-![image](https://raw.githubusercontent.com/Shubhamharanale7/django-multitenant-saas-ecommerce/main/media/Screenshot2.png)
+| Endpoint | Description |
+|----------|-------------|
+| `http://127.0.0.1:8585/swagger/` | Swagger API docs |
+| `http://127.0.0.1:8585/graphql` | GraphQL playground |
+| `http://127.0.0.1:8585/data-browser/` | Data browser |
 
+![image](https://raw.githubusercontent.com/Shubhamharanale7/Django-Saas-E-Commerce-Devops-Deployment/main/media/Screenshot2.png)
 
-# GraphQL
-![Alt text](image.png)
-http://127.0.0.1:8585/graphql
+## Multi-Tenant Setup
 
-# Extensions
+```bash
+pip install -r requirements.txt
+python manage.py makemigrations finances
+python manage.py makemigrations app
+python manage.py migrate finances
+python manage.py migrate app
+```
+
+Create a tenant:
+```python
+tenant = Client(schema_name="test", name="Test Company")
+domain = Domain(domain="test.localhost", tenant=tenant, is_primary=True)
+```
+
+## Useful Django Extensions
+
+```bash
 python manage.py show_urls
 python manage.py graph_models finances -a -o finances_models.png
+```
 
-# wagtail
+## AWS Deployment with Terraform
 
-# Django ledger
- ```
-pip install pipenv (globally)
- ```
-To activate this project's virtualenv, run pipenv shell.
-Alternatively, run a command inside the virtualenv with pipenv run.
- ```
-pipenv install django-ledger[graphql,pdf]
- ```
-  ```
-python manage.py test django_ledger
- ```
+```bash
+cd deployments/terraform/terraform-aws-ec2-tf/terraform
+terraform init
+terraform plan
+terraform apply --auto-approve
+```
 
+## CI/CD Pipeline (Jenkins)
 
-# Multi tenant Settings
+Multiple Jenkinsfile variants are available in `deployments/Jenkins/`:
 
- ```
-pip install -r requirements.txt
- ```
-  ```
-python manage.py makemigrations finances
- ```
-  ```
-python manage.py makemigrations app
- ```
+- `Jenkinsfile` — Standard pipeline
+- `Jenkinsfile-SonarQube-Trivy-Scan` — With security scanning
+- `Jenkinsfile-docker` — Docker build and push
+- `JenkinsfileEKS` — EKS deployment
+- `JenkinsfileArgoCDTemplate` — ArgoCD GitOps
 
- ```
-python manage.py migrate finances
- ```
-  ```
-python manage.py migrate app
- ```
-tenant = Client(schema_name="test", name="test Company")
+## Tech Stack
 
-domain = Domain(domain="btest.localhost", tenant=tenant, is_primary=True)
+| Category | Tools |
+|----------|-------|
+| Backend | Django, Django REST Framework, Celery, Gunicorn |
+| Database | PostgreSQL (multi-tenant), Redis |
+| Containerization | Docker, Docker Compose |
+| Orchestration | Kubernetes, AWS EKS |
+| IaC | Terraform |
+| CI/CD | Jenkins, GitHub Actions |
+| Security | SonarQube, Trivy, OWASP |
+| Monitoring | Prometheus, Grafana |
+| Payments | Stripe |
+| API | REST, GraphQL, Swagger |
 
+---
 
-Thank you for Reading !! 🙌🏻, see you in the next article.🤘
+**Built by [Shubham Haranale](https://github.com/Shubhamharanale7)**
 
-# For more information about the author visit
-
-- [@DevCloud Ninjas](https://www.Shubhamharanale7.com)
-- [@X](twitter.com/Shubhamharanale7)
-- [@Linkedin](https://www.linkedin.com/company/Shubhamharanale7)
-
-
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Shubhamharanale7)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/shubhamharanale7)
 
